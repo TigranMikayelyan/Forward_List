@@ -1,5 +1,4 @@
-#include <iostream>
-#include "list.h"
+#include "forward_list.h"
 
 ForwardList::ForwardList() : head{nullptr}, m_size{} {}
 
