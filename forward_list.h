@@ -1,3 +1,6 @@
+#ifndef FORWARD_LIST_H
+#define FORWARD_LIST_H
+
 class ForwardList
 {
 public:
@@ -38,3 +41,4 @@ private:
 	}*head;
 	int m_size;
 };
+#endif // FORWARD_LIST_H
