@@ -70,6 +70,7 @@ ForwardList& ForwardList::operator=(ForwardList&& rhs)
 		tmp1 = tmp1->next;
 		tmp2 = tmp2->next;
 	}
+	rhs.head = nullptr;
 	return *this;
 }
 
