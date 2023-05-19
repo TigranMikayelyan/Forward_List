@@ -1,8 +1,10 @@
 #include "forward_list.h"
 
-ForwardList::ForwardList() : head{nullptr}, m_size{} {}
+template <typename T>
+ForwardList<T>::ForwardList() : head{nullptr}, m_size{} {}
 
-ForwardList::~ForwardList() 
+template <typename T>
+ForwardList<T>::~ForwardList() 
 {
 	if (head) 
 	{
@@ -10,7 +12,8 @@ ForwardList::~ForwardList()
 	}
 }
 
-ForwardList::ForwardList(const ForwardList& other)
+template <typename T>
+ForwardList<T>::ForwardList(const ForwardList& other)
 {
 	if (other.head == nullptr)
 	{
@@ -30,13 +33,15 @@ ForwardList::ForwardList(const ForwardList& other)
 	}
 }
 
-ForwardList::ForwardList(ForwardList&& other)
+template <typename T>
+ForwardList<T>::ForwardList(ForwardList&& other)
 {
 	head = other.head;
 	other.head = nullptr;
 }
 
-ForwardList& ForwardList::operator=(const ForwardList& rhs)
+template <typename T>
+ForwardList<T>& ForwardList<T>::operator=(const ForwardList& rhs)
 {
 	if (this->head == rhs.head)
 	{
@@ -54,7 +59,8 @@ ForwardList& ForwardList::operator=(const ForwardList& rhs)
 	return *this;
 }
 
-ForwardList& ForwardList::operator=(ForwardList&& rhs)
+template <typename T>
+ForwardList<T>& ForwardList<T>::operator=(ForwardList&& rhs)
 {
 	if (this->head == rhs.head)
 	{
@@ -73,7 +79,8 @@ ForwardList& ForwardList::operator=(ForwardList&& rhs)
 	return *this;
 }
 
-bool ForwardList::operator==(ForwardList& other)
+template <typename T>
+bool ForwardList<T>::operator==(ForwardList& other)
 {
 	if (head == nullptr || other.head == nullptr || (this->length() != other.length()))
 	{
@@ -93,7 +100,8 @@ bool ForwardList::operator==(ForwardList& other)
 	return true;
 }
 
-bool ForwardList::operator!=(ForwardList& other)
+template <typename T>
+bool ForwardList<T>::operator!=(ForwardList& other)
 {
 	if (head == nullptr || other.head == nullptr || (this->length() != other.length()))
 	{
@@ -113,7 +121,8 @@ bool ForwardList::operator!=(ForwardList& other)
 	return false;
 }
 
-void ForwardList::sort()
+template <typename T>
+void ForwardList<T>::sort()
 {
 	for (Node* i = head; i->next != nullptr; i = i->next)
 	{
@@ -127,7 +136,8 @@ void ForwardList::sort()
 	}
 }
 
-void ForwardList::merge(ForwardList other)
+template <typename T>
+void ForwardList<T>::merge(ForwardList<T> other)
 {
 	if (head == nullptr || other.head == nullptr)
 	{
@@ -150,7 +160,8 @@ void ForwardList::merge(ForwardList other)
 	sort();
 }
 
-const int& ForwardList::front() const
+template <typename T>
+const T& ForwardList<T>::front() const
 {
 	if (empty())
 	{
@@ -159,12 +170,14 @@ const int& ForwardList::front() const
 	return head->val;
 }
 
-int ForwardList::begin() const
+template <typename T>
+T ForwardList<T>::begin() const
 {
 	return head->val;
 }
 
-int ForwardList::end() const
+template <typename T>
+T ForwardList<T>::end() const
 {
 	Node* tmp = head;
 	while (tmp->next)
@@ -174,7 +187,8 @@ int ForwardList::end() const
 	return tmp->val;
 } 
 
-void ForwardList::clear()
+template <typename T>
+void ForwardList<T>::clear()
 {
 	while (head)
 	{
@@ -190,7 +204,8 @@ void ForwardList::clear()
 	head = nullptr;
 }
 
-bool ForwardList::empty() const
+template <typename T>
+bool ForwardList<T>::empty() const
 {
 	if (head == nullptr)
 	{
@@ -199,7 +214,8 @@ bool ForwardList::empty() const
 	return false;
 }
 
-void ForwardList::push_front(int new_value)
+template <typename T>
+void ForwardList<T>::push_front(T new_value)
 {
 	if (head == nullptr)
 	{
@@ -211,7 +227,8 @@ void ForwardList::push_front(int new_value)
 	head = tmp;
 }
 
-void ForwardList::pop_front()
+template <typename T>
+void ForwardList<T>::pop_front()
 {
 	if (head == nullptr)
 	{
@@ -223,7 +240,8 @@ void ForwardList::pop_front()
 	tmp = nullptr;
 }
 
-void ForwardList::insert_after(int index, int new_value)
+template <typename T>
+void ForwardList<T>::insert_after(int index, T new_value)
 {
 	if (head == nullptr)
 	{
@@ -252,7 +270,8 @@ void ForwardList::insert_after(int index, int new_value)
 	prev->next->next = tmp;
 }
 
-void ForwardList::erase_after(int index)
+template <typename T>
+void ForwardList<T>::erase_after(int index)
 {
 	if (index < 0 || index >= length() - 1)
 	{
@@ -273,7 +292,8 @@ void ForwardList::erase_after(int index)
 	del = nullptr;
 }
 
-int ForwardList::length()
+template <typename T>
+int ForwardList<T>::length()
 {
 	Node* tmp = head;
 	int count = 0;
@@ -285,7 +305,8 @@ int ForwardList::length()
 	return count;
 }
 
-void ForwardList::resize(int new_size)
+template <typename T>
+void ForwardList<T>::resize(int new_size)
 {
 	Node* tmp = head;
 	int i = length();
@@ -301,14 +322,16 @@ void ForwardList::resize(int new_size)
 	tmp->next = nullptr;
 }
 
-void ForwardList::swap(ForwardList& other)
+template <typename T>
+void ForwardList<T>::swap(ForwardList<T>& other)
 {
 	Node* tmp = head;
 	head = other.head;
 	other.head = tmp;
 }
 
-void ForwardList::reverse()
+template <typename T>
+void ForwardList<T>::reverse()
 {
 	if (empty())
 	{
@@ -326,7 +349,8 @@ void ForwardList::reverse()
 	head = prev;
 }
 
-void ForwardList::print()
+template <typename T>
+void ForwardList<T>::print()
 {
 	Node* tmp = head;
 	while (tmp)
