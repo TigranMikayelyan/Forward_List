@@ -1,43 +1,47 @@
 #ifndef FORWARD_LIST_H
 #define FORWARD_LIST_H
 
+#include <iostream>
+#include <exception>
+
+template <typename T>
 class ForwardList
 {
 public:
 	ForwardList();
 	~ForwardList();
-	ForwardList(const ForwardList&);
-	ForwardList(ForwardList&&);
+	ForwardList(const ForwardList<T>&);
+	ForwardList(ForwardList<T>&&);
 public:
-	ForwardList& operator=(const ForwardList&);
-	ForwardList& operator=(ForwardList&&);
-	bool operator==(ForwardList&);
-	bool operator!=(ForwardList&);
+	ForwardList& operator=(const ForwardList<T>&);
+	ForwardList& operator=(ForwardList<T>&&);
+	bool operator==(ForwardList<T>&);
+	bool operator!=(ForwardList<T>&);
 public:
 	void sort();
-	void merge(ForwardList);
+	void merge(ForwardList<T>);
 public:
-	const int& front() const;
+	const T& front() const;
 	int length();
-	int begin() const;
-	int end() const;
+	T begin() const;
+	T end() const;
 	bool empty() const;
 	void clear();
-	void push_front(int);
+	void push_front(T);
 	void pop_front();
-	void insert_after(int, int);
+	void insert_after(int, T);
 	void erase_after(int);
 	void resize(int);
-	void swap(ForwardList&);
+	void swap(ForwardList<T>&);
 	void reverse();
 	void print();
 private:
 	struct Node
 	{
-		int val;
+		T val;
 		Node* next;
 		Node() : val{}, next{nullptr} {}
-		Node(const int& rhs) : val{rhs}, next{nullptr} {}
+		Node(const T& rhs) : val{rhs}, next{nullptr} {}
 	}*head;
 	int m_size;
 };
