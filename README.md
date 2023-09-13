@@ -13,7 +13,7 @@ If you want to compile this code.
 You must write
 
 ```
-g++ -std=c++2a main.cpp forwardlist.cpp
+g++ -std=c++2a main.cpp
 
 ```
 
