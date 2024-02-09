@@ -37,16 +37,19 @@ template <typename T>
 ForwardList<T>::ForwardList(ForwardList&& other)
 {
 	head = other.head;
+	m_size = other.m_size;
 	other.head = nullptr;
+	other.m_size = 0;
 }
 
 template <typename T>
 ForwardList<T>& ForwardList<T>::operator=(const ForwardList& rhs)
 {
-	if (this->head == rhs.head)
+	if (this == &rhs)
 	{
 		return *this;
 	}
+	clear();
 	head = new Node(rhs.head->val);
 	Node* tmp1 = head;
 	Node* tmp2 = rhs.head->next;
@@ -62,20 +65,15 @@ ForwardList<T>& ForwardList<T>::operator=(const ForwardList& rhs)
 template <typename T>
 ForwardList<T>& ForwardList<T>::operator=(ForwardList&& rhs)
 {
-	if (this->head == rhs.head)
+	if (this == &rhs)
 	{
 		return *this;
 	}
-	head = new Node(rhs.head->val);
-	Node* tmp1 = head;
-	Node* tmp2 = rhs.head->next;
-	while (tmp2)
-	{
-		tmp1->next = new Node(tmp2->val);
-		tmp1 = tmp1->next;
-		tmp2 = tmp2->next;
-	}
-	rhs.head = nullptr;
+	clear();
+	head = rhs.head;
+    m_size = rhs.m_size;
+    rhs.head = nullptr;
+    rhs.m_size = 0;
 	return *this;
 }
 
@@ -139,25 +137,39 @@ void ForwardList<T>::sort()
 template <typename T>
 void ForwardList<T>::merge(ForwardList<T> other)
 {
-	if (head == nullptr || other.head == nullptr)
+	ForwardList<T> merged_lists;
+	Node* current_this = head;
+	Node* current_oth = other.head;
+	while (current_this != nullptr && current_oth != nullptr)
 	{
-		throw std::logic_error("List is empty");
+		if (current_this->val <= current_oth->val)
+		{
+			merged_lists.push_front(current_this->val);
+			current_this = current_this->next;
+		}
+		else
+		{	
+			merged_lists.push_front(current_oth->val);
+			current_oth = current_oth->next;
+		}
 	}
-	this->sort();
-	other.sort();
-	Node* tmp = head;
-	while (tmp->next)
+	while (current_this != nullptr)
 	{
-		tmp = tmp->next;
+		merged_lists.push_front(current_this->val);
+		current_this = current_this->next;
 	}
-	Node* tmp2 = other.head;
-	while(tmp2) 
+	while (current_oth != nullptr)
 	{
-		tmp->next = new Node(tmp2->val);
-		tmp2 = tmp2->next;
-		tmp = tmp->next;
+		merged_lists.push_front(current_oth->val);
+		current_oth = current_oth->next;
 	}
-	sort();
+
+	clear();
+	head = merged_lists.head;
+	m_size = merged_lists.m_size;
+
+	merged_lists.head = nullptr;
+	merged_lists.m_size = 0;
 }
 
 template <typename T>
@@ -190,6 +202,11 @@ T ForwardList<T>::end() const
 template <typename T>
 void ForwardList<T>::clear()
 {
+	if (head == nullptr)
+	{
+		std::cout << "List is empty" << std::endl;
+		return;
+	}
 	while (head)
 	{
 		Node* tmp = head;
@@ -197,21 +214,13 @@ void ForwardList<T>::clear()
 		delete tmp;
 		tmp = nullptr;
 	}
-	if (head) 
-	{
-		delete head;
-	}
 	head = nullptr;
 }
 
 template <typename T>
 bool ForwardList<T>::empty() const
 {
-	if (head == nullptr)
-	{
-		return true;
-	}
-	return false;
+	return (head == nullptr);
 }
 
 template <typename T>
@@ -225,6 +234,7 @@ void ForwardList<T>::push_front(T new_value)
 	Node* tmp = new Node(new_value);
 	tmp->next = head;
 	head = tmp;
+	m_size++;
 }
 
 template <typename T>
@@ -238,6 +248,7 @@ void ForwardList<T>::pop_front()
 	head = head->next;
 	delete tmp;
 	tmp = nullptr;
+	m_size--;
 }
 
 template <typename T>
@@ -268,11 +279,16 @@ void ForwardList<T>::insert_after(int index, T new_value)
 	}
 	prev->next = new Node(new_value);
 	prev->next->next = tmp;
+	m_size++;
 }
 
 template <typename T>
 void ForwardList<T>::erase_after(int index)
 {
+	if (head == nullptr)
+	{
+		throw std::logic_error("List is empty you can't erase a value");
+	}
 	if (index < 0 || index >= length() - 1)
 	{
 		throw std::out_of_range("Invalid index!!!");
@@ -280,6 +296,7 @@ void ForwardList<T>::erase_after(int index)
 	if (index == 0)
 	{
 		pop_front();
+		return;
 	}
 	Node* tmp = head;
 	for (int i = 0; i < index; ++i)
@@ -290,11 +307,16 @@ void ForwardList<T>::erase_after(int index)
 	tmp->next = tmp->next->next;
 	delete del;
 	del = nullptr;
+	m_size--;
 }
 
 template <typename T>
 int ForwardList<T>::length()
 {
+	if (head == nullptr)
+	{
+		return 0;
+	}
 	Node* tmp = head;
 	int count = 0;
 	while (tmp)
@@ -308,6 +330,10 @@ int ForwardList<T>::length()
 template <typename T>
 void ForwardList<T>::resize(int new_size)
 {
+	if (new_size < 0)
+    {
+        throw std::invalid_argument("New size cannot be negative.");
+    }
 	Node* tmp = head;
 	int i = length();
 	while (tmp->next)
@@ -325,9 +351,13 @@ void ForwardList<T>::resize(int new_size)
 template <typename T>
 void ForwardList<T>::swap(ForwardList<T>& other)
 {
-	Node* tmp = head;
+	Node* tmp_head = head;
 	head = other.head;
-	other.head = tmp;
+	other.head = tmp_head;
+
+	int tmp_size = m_size;
+	m_size = other.m_size;
+	other.m_size = tmp_size;
 }
 
 template <typename T>
@@ -362,4 +392,4 @@ void ForwardList<T>::print()
 	{
 		std::cout << std::endl;
 	}
-}
+} 
